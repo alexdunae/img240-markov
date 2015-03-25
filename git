@@ -1,0 +1,58 @@
+From 20ac73230e42248e8d37ed496ea42e780aad8d5e Mon Sep 17 00:00:00 2001
+From: Alex Dunae <alex@dunae.ca>
+Date: Wed, 18 Mar 2015 17:33:17 -0700
+Subject: [PATCH] Fix up Heroku config
+
+---
+ Procfile       | 19 -------------------
+ config/puma.rb | 16 ++++++++++++++++
+ 2 files changed, 16 insertions(+), 19 deletions(-)
+ create mode 100644 config/puma.rb
+
+diff --git a/Procfile b/Procfile
+index 1975805..c2c566e 100644
+--- a/Procfile
++++ b/Procfile
+@@ -1,20 +1 @@
+ web: bundle exec puma -C config/puma.rb
+-END
+-
+-file 'config/puma.rb', <<-'EOC'
+-workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+-threads_count = Integer(ENV['MAX_THREADS'] || 5)
+-threads threads_count, threads_count
+-
+-preload_app!
+-
+-rackup      DefaultRackup
+-port        ENV['PORT']     || 3000
+-environment ENV['RACK_ENV'] || 'development'
+-
+-
+-on_worker_boot do
+-  # Worker specific setup for Rails 4.1+
+-  # See: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#on-worker-boot
+-  ActiveRecord::Base.establish_connection
+-end
+diff --git a/config/puma.rb b/config/puma.rb
+new file mode 100644
+index 0000000..1989d19
+--- /dev/null
++++ b/config/puma.rb
+@@ -0,0 +1,16 @@
++workers Integer(ENV['WEB_CONCURRENCY'] || 2)
++threads_count = Integer(ENV['MAX_THREADS'] || 5)
++threads threads_count, threads_count
++
++preload_app!
++
++rackup      DefaultRackup
++port        ENV['PORT']     || 3000
++environment ENV['RACK_ENV'] || 'development'
++
++
++on_worker_boot do
++  # Worker specific setup for Rails 4.1+
++  # See: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#on-worker-boot
++  ActiveRecord::Base.establish_connection
++end
